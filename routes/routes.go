@@ -30,5 +30,11 @@ func SetupRouter() *gin.Engine {
 
 	r.GET("/tasks/:id", controllers.GetTaskByID) // read one
 
+	r.GET("/tasksByFilter", controllers.GetTasksByFilter) //read all task
+
+	r.DELETE("/deleteTask/:id", controllers.DeleteTask) //delete task by id
+
+	r.PUT("/updateTasks/:id", controllers.UpdateTask) //update task by id
+
 	return r
 }

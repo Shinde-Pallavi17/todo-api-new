@@ -55,7 +55,7 @@ func GetTaskByID(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// GetTasks godoc
+// GetTasksByFilter godoc
 // @Summary Get all tasks
 // @Description Retrieve all tasks with optional filters (status, due_date)
 // @Tags tasks
@@ -63,7 +63,9 @@ func GetTaskByID(c *gin.Context) {
 // @Param status query string false "Filter by status (pending, in-progress, completed)"
 // @Param due_date query string false "Filter by due date (YYYY-MM-DD)"
 // @Success 200 {array} models.Task
-// @Router /tasks [get]
+// @Failure 400 {object} map[string]string "Invalid due_date format"
+// @Failure 500 {object} map[string]string "Failed to fetch tasks"
+// @Router /tasksByFilter [get]
 func GetTasksByFilter(c *gin.Context) {
 	var tasks []models.Task
 
