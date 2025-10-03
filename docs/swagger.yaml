@@ -6,6 +6,7 @@ definitions:
         type: string
       due_date:
         description: user passes string in YYYY-MM-DD
+        example: yyyy-mm-dd
         type: string
       status:
         enum:
@@ -27,6 +28,7 @@ definitions:
         type: string
       due_date:
         description: string from client
+        example: yyyy-mm-dd
         type: string
       status:
         description: optional

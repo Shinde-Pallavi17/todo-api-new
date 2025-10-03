@@ -12,7 +12,7 @@ import (
 type UpdateTaskRequest struct {
 	Title       string `json:"title" binding:"required,max=100"`
 	Description string `json:"description" binding:"required"`
-	DueDate     string `json:"due_date" binding:"required"`                                    // string from client
+	DueDate     string `json:"due_date" binding:"required" example:"yyyy-mm-dd"`               // string from client
 	Status      string `json:"status" binding:"omitempty,oneof=pending in_progress completed"` // optional
 }
 

@@ -322,7 +322,8 @@ const docTemplate = `{
                 },
                 "due_date": {
                     "description": "user passes string in YYYY-MM-DD",
-                    "type": "string"
+                    "type": "string",
+                    "example": "yyyy-mm-dd"
                 },
                 "status": {
                     "type": "string",
@@ -351,7 +352,8 @@ const docTemplate = `{
                 },
                 "due_date": {
                     "description": "string from client",
-                    "type": "string"
+                    "type": "string",
+                    "example": "yyyy-mm-dd"
                 },
                 "status": {
                     "description": "optional",
