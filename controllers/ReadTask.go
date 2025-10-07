@@ -110,6 +110,8 @@ func GetTasksByFilter(c *gin.Context) {
 	// Convert all date fields from UTC to IST before sending to user
 	loc, _ := time.LoadLocation("Asia/Kolkata")
 	for i := range tasks {
+
+		//timestamp converted into utc to ist
 		tasks[i].DueDate = tasks[i].DueDate.In(loc)
 		tasks[i].CreatedAt = tasks[i].CreatedAt.In(loc)
 		tasks[i].UpdatedAt = tasks[i].UpdatedAt.In(loc)
