@@ -25,6 +25,14 @@ func GetAllTasks(c *gin.Context) {
 		return
 	}
 
+	// Convert all date fields from UTC to IST before sending to user
+	loc, _ := time.LoadLocation("Asia/Kolkata")
+	for i := range tasks {
+		tasks[i].DueDate = tasks[i].DueDate.In(loc)
+		tasks[i].CreatedAt = tasks[i].CreatedAt.In(loc)
+		tasks[i].UpdatedAt = tasks[i].UpdatedAt.In(loc)
+	}
+
 	c.JSON(http.StatusOK, tasks)
 }
 
@@ -51,6 +59,12 @@ func GetTaskByID(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
 		return
 	}
+
+	// Convert all date fields from UTC to IST before sending to user
+	loc, _ := time.LoadLocation("Asia/Kolkata")
+	task.DueDate = task.DueDate.In(loc)
+	task.CreatedAt = task.CreatedAt.In(loc)
+	task.UpdatedAt = task.UpdatedAt.In(loc)
 
 	c.JSON(http.StatusOK, task)
 }
@@ -91,6 +105,14 @@ func GetTasksByFilter(c *gin.Context) {
 	if err := query.Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch tasks"})
 		return
+	}
+
+	// Convert all date fields from UTC to IST before sending to user
+	loc, _ := time.LoadLocation("Asia/Kolkata")
+	for i := range tasks {
+		tasks[i].DueDate = tasks[i].DueDate.In(loc)
+		tasks[i].CreatedAt = tasks[i].CreatedAt.In(loc)
+		tasks[i].UpdatedAt = tasks[i].UpdatedAt.In(loc)
 	}
 
 	c.JSON(http.StatusOK, tasks)
