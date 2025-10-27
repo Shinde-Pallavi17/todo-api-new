@@ -2,7 +2,7 @@ package Routes
 
 import (
 	"todo-manager/docs"
-	"todo-manager/middlewares"
+	middlewares "todo-manager/middleware"
 	taskControllers "todo-manager/taskControllers"
 	userControllers "todo-manager/userControllers"
 
