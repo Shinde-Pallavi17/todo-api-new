@@ -39,9 +39,9 @@ func SetupRouter() *gin.Engine {
 
 		auth.GET("/tasks", taskControllers.GetAllTasks) //read all task
 
-		auth.GET("/tasks/:id", taskControllers.GetTaskByID) // read one task
+		auth.GET("/tasks/:id", taskControllers.GetTaskByID) // read one task by id
 
-		auth.GET("/tasksByFilter", taskControllers.GetTasksByFilter) //read task by filter
+		auth.GET("/tasksByFilter", taskControllers.GetTasksByFilter) //read task by filter date and status
 
 		auth.DELETE("/deleteTask/:id", taskControllers.DeleteTask) //delete task by id
 
