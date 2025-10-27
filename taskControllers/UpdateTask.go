@@ -18,10 +18,11 @@ type UpdateTaskRequest struct {
 
 // UpdateTask godoc
 // @Summary Update a task
-// @Description Replace all fields of a task by its ID.
+// @Description Replace all fields of a task by its ID. (JWT required)
 // Due date must be in YYYY-MM-DD format and will be stored in UTC.
 // If no status is provided, it defaults to "pending".
 // @Tags tasks
+// @Security BearerAuth
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Task ID"

@@ -10,6 +10,10 @@ import (
 // @description Simple Todo API with Gin, GORM, MySQL, Swagger
 // @host localhost:8080
 // @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	// Initialize DB once
 	config.ConnectDB()
