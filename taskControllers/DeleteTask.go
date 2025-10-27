@@ -10,8 +10,9 @@ import (
 
 // DeleteTask godoc
 // @Summary Delete a task
-// @Description Delete a task by its id
+// @Description Delete a task by its id (JWT required)
 // @Tags tasks
+// @Security BearerAuth
 // @Param id path int true "Task id"
 // @Success 200 {object} map[string]string "Task deleted successfully"
 // @Failure 400 {object} map[string]string "Invalid task id"

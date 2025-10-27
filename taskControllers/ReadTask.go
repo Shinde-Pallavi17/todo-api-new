@@ -12,8 +12,9 @@ import (
 
 // GetAllTasks godoc
 // @Summary Get all tasks
-// @Description Retrieve all tasks from database (no filter)
+// @Description Retrieve all tasks from database (no filter) (JWT required)
 // @Tags tasks
+// @Security BearerAuth
 // @Produce  json
 // @Success 200 {array} models.Task
 // @Router /tasks [get]
@@ -40,8 +41,9 @@ func GetAllTasks(c *gin.Context) {
 
 // GetTaskByID godoc
 // @Summary Get a task by ID
-// @Description Retrieve a single task by its ID
+// @Description Retrieve a single task by its ID (JWT required)
 // @Tags tasks
+// @Security BearerAuth
 // @Produce  json
 // @Param id path int true "Task ID"
 // @Success 200 {object} models.Task
@@ -73,8 +75,9 @@ func GetTaskByID(c *gin.Context) {
 
 // GetTasksByFilter godoc
 // @Summary Get all tasks
-// @Description Retrieve all tasks with optional filters (status, due_date)
+// @Description Retrieve all tasks with optional filters (status, due_date) (JWT required)
 // @Tags tasks
+// @Security BearerAuth
 // @Produce  json
 // @Param status query string false "Filter by status (pending, in-progress, completed)"
 // @Param due_date query string false "Filter by due date (YYYY-MM-DD)"

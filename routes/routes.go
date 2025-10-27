@@ -1,8 +1,10 @@
 package routes
 
 import (
-	"todo-manager/controllers"
 	"todo-manager/docs"
+	"todo-manager/middlewares"
+	taskControllers "todo-manager/taskControllers"
+	userControllers "todo-manager/userControllers"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -19,22 +21,33 @@ func SetupRouter() *gin.Engine {
 	docs.SwaggerInfo.Description = "Simple Todo API with Gin, GORM, MySQL, Swagger"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http"}
 
 	// Swagger endpoint
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// Routes
-	r.POST("/task", controllers.CreateTask) //create new task
+	// public routes
+	r.POST("/register", userControllers.RegisterUser) //register user
 
-	r.GET("/tasks", controllers.GetAllTasks) //read all task
+	r.POST("/login", userControllers.LoginUser) //user login
 
-	r.GET("/tasks/:id", controllers.GetTaskByID) // read one
+	// Protected routes
+	auth := r.Group("/")
+	auth.Use(middlewares.AuthMiddleware())
+	{
+		auth.POST("/task", taskControllers.CreateTask) //create new task
 
-	r.GET("/tasksByFilter", controllers.GetTasksByFilter) //read all task
+		auth.GET("/tasks", taskControllers.GetAllTasks) //read all task
 
-	r.DELETE("/deleteTask/:id", controllers.DeleteTask) //delete task by id
+		auth.GET("/tasks/:id", taskControllers.GetTaskByID) // read one task
 
-	r.PUT("/updateTasks/:id", controllers.UpdateTask) //update task by id
+		auth.GET("/tasksByFilter", taskControllers.GetTasksByFilter) //read task by filter
+
+		auth.DELETE("/deleteTask/:id", taskControllers.DeleteTask) //delete task by id
+
+		auth.PUT("/updateTasks/:id", taskControllers.UpdateTask) //update task by id
+
+	}
 
 	return r
 }

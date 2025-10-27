@@ -20,6 +20,7 @@ func ConnectDB() {
 
 	// Run AutoMigrate on all models
 	database.AutoMigrate(&models.Task{})
+	database.AutoMigrate(&models.User{})
 
 	DB = database
 	log.Println("Database connected and migrated successfully")

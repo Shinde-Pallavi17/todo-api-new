@@ -18,8 +18,9 @@ type CreateTaskRequest struct {
 
 // CreateTask godoc
 // @Summary Create a new task
-// @Description Add a new task to the todo list
+// @Description Add a new task (JWT required)
 // @Tags tasks
+// @Security BearerAuth
 // @Accept  json
 // @Produce  json
 // @Param task body CreateTaskRequest true "Task input"
@@ -43,7 +44,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	// Optional validation: due date must be future
+	//Optional validation: due date must be future
 	if parseDueDate.Before(time.Now().UTC()) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Due date cannot be in the past"})
 		return

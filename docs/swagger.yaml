@@ -22,6 +22,28 @@ definitions:
     - due_date
     - title
     type: object
+  controllers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RegisterRequest:
+    properties:
+      password:
+        minLength: 4
+        type: string
+      username:
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
   controllers.UpdateTaskRequest:
     properties:
       description:
@@ -71,7 +93,7 @@ info:
 paths:
   /deleteTask/{id}:
     delete:
-      description: Delete a task by its id
+      description: Delete a task by its id (JWT required)
       parameters:
       - description: Task id
         in: path
@@ -103,14 +125,88 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Delete a task
       tags:
       - tasks
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with username and password
+      parameters:
+      - description: User login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid username or password
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user
+      parameters:
+      - description: User registration data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid input or username already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Server error (failed to hash password)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - Auth
   /task:
     post:
       consumes:
       - application/json
-      description: Add a new task to the todo list
+      description: Add a new task (JWT required)
       parameters:
       - description: Task input
         in: body
@@ -137,12 +233,14 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Create a new task
       tags:
       - tasks
   /tasks:
     get:
-      description: Retrieve all tasks from database (no filter)
+      description: Retrieve all tasks from database (no filter) (JWT required)
       produces:
       - application/json
       responses:
@@ -152,12 +250,14 @@ paths:
             items:
               $ref: '#/definitions/models.Task'
             type: array
+      security:
+      - BearerAuth: []
       summary: Get all tasks
       tags:
       - tasks
   /tasks/{id}:
     get:
-      description: Retrieve a single task by its ID
+      description: Retrieve a single task by its ID (JWT required)
       parameters:
       - description: Task ID
         in: path
@@ -177,12 +277,15 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Get a task by ID
       tags:
       - tasks
   /tasksByFilter:
     get:
-      description: Retrieve all tasks with optional filters (status, due_date)
+      description: Retrieve all tasks with optional filters (status, due_date) (JWT
+        required)
       parameters:
       - description: Filter by status (pending, in-progress, completed)
         in: query
@@ -213,6 +316,8 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Get all tasks
       tags:
       - tasks
@@ -220,7 +325,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Replace all fields of a task by its ID.
+      description: Replace all fields of a task by its ID. (JWT required)
       parameters:
       - description: Task ID
         in: path
@@ -258,7 +363,15 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Update a task
       tags:
       - tasks
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
