@@ -21,7 +21,10 @@ import (
 func GetAllTasks(c *gin.Context) {
 	var tasks []models.Task
 
-	if err := config.DB.Find(&tasks).Error; err != nil {
+	// ✅ Get user ID from context (added by middleware)
+	userID := c.GetUint("userID")
+
+	if err := config.DB.Where("user_id = ?", userID).Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch tasks"})
 		return
 	}
@@ -50,16 +53,17 @@ func GetAllTasks(c *gin.Context) {
 // @Failure 404 {object} map[string]string
 // @Router /tasks/{id} [get]
 func GetTaskByID(c *gin.Context) {
-	id := c.Param("id")
 
-	taskID, err := strconv.Atoi(id)
+	taskID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
 		return
 	}
 
+	userID := c.GetUint("userID")
+
 	var task models.Task
-	if err := config.DB.First(&task, taskID).Error; err != nil {
+	if err := config.DB.Where("id = ? AND user_id = ?", taskID, userID).First(&task).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
 		return
 	}
@@ -88,8 +92,10 @@ func GetTaskByID(c *gin.Context) {
 func GetTasksByFilter(c *gin.Context) {
 	var tasks []models.Task
 
+	userID := c.GetUint("userID") // ✅ Only current user's tasks
+
 	// Start building query
-	query := config.DB.Model(&models.Task{})
+	query := config.DB.Model(&models.Task{}).Where("user_id = ?", userID)
 
 	// Filter by status
 	if status := c.Query("status"); status != "" {

@@ -50,6 +50,14 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
+	// Get user ID from context (set by middleware)
+	userIDVal, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authorized"})
+		return
+	}
+	userID := userIDVal.(uint)
+
 	// If no status provided, set default
 	status := req.Status
 	if status == "" {
@@ -62,6 +70,7 @@ func CreateTask(c *gin.Context) {
 		Description: req.Description,
 		DueDate:     parseDueDate,
 		Status:      status,
+		UserID:      userID,
 	}
 
 	if err := config.DB.Create(&task).Error; err != nil {

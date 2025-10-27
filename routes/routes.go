@@ -1,4 +1,4 @@
-package routes
+package Routes
 
 import (
 	"todo-manager/docs"
