@@ -8,6 +8,7 @@ type Task struct {
 	Description string    `json:"description" gorm:"optional"`
 	DueDate     time.Time `json:"due_date" gorm:"not null"`
 	Status      string    `json:"status" gorm:"default=pending'"`
+	UserID      uint      `json:"user_id" gorm:"foreignKey:UserID"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
