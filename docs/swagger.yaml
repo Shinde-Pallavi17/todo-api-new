@@ -204,6 +204,99 @@ paths:
       summary: Register a new user
       tags:
       - Auth
+  /reports/overdue:
+    get:
+      consumes:
+      - application/json
+      description: Returns all overdue (past due date) tasks for the currently logged-in
+        user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of overdue tasks
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized - invalid or missing token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user's overdue tasks
+      tags:
+      - Reports
+  /reports/tomorrow:
+    get:
+      consumes:
+      - application/json
+      description: Returns all tasks whose due date is exactly tomorrow for the logged-in
+        user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tomorrow's tasks
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized - invalid or missing token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user's tasks due tomorrow
+      tags:
+      - Reports
+  /reports/week:
+    get:
+      consumes:
+      - application/json
+      description: Returns all tasks due within the next 7 days for the logged-in
+        user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of next 7 days tasks
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized - invalid or missing token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user's tasks due in next 7 days
+      tags:
+      - Reports
   /task:
     post:
       consumes:

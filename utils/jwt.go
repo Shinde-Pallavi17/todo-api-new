@@ -7,7 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var JwtSecret = []byte("YourSecretKey123") // Change this to a strong secret
+var JwtSecret = []byte("MyTodo@13") // Change this to a strong secret
 
 // GenerateJWT generates a JWT token with username and expiry
 func GenerateJWT(userID uint, username string) (string, error) {
