@@ -47,6 +47,12 @@ func SetupRouter() *gin.Engine {
 
 		auth.PUT("/updateTasks/:id", taskControllers.UpdateTask) //update task by id
 
+		auth.GET("reports/overdue", taskControllers.GetOverdueTasks)
+
+		auth.GET("reports/tomorrow", taskControllers.GetTomorrowTasks)
+
+		auth.GET("reports/week", taskControllers.GetWeekTasks)
+
 	}
 
 	return r
