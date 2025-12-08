@@ -14,12 +14,25 @@ definitions:
         - in_progress
         - completed
         type: string
+      task_group:
+        enum:
+        - personal
+        - office
+        - shopping
+        - family
+        - friends
+        - education
+        - health
+        - travel
+        - food
+        type: string
       title:
         maxLength: 100
         type: string
     required:
     - description
     - due_date
+    - task_group
     - title
     type: object
   controllers.LoginRequest:
@@ -77,7 +90,22 @@ definitions:
         type: string
       id:
         type: integer
+      is_overdue:
+        type: boolean
       status:
+        type: string
+      task_group:
+        enum:
+        - personal
+        - office
+        - shopping
+        - family
+        - friends
+        - education
+        - health
+        - travel
+        - food
+        example: personal
         type: string
       title:
         type: string
@@ -375,6 +403,40 @@ paths:
       security:
       - BearerAuth: []
       summary: Get a task by ID
+      tags:
+      - tasks
+  /tasks/group/{group}:
+    get:
+      description: Get tasks filtered by specific groups like personal, education,
+        office, etc.
+      parameters:
+      - description: Task Group
+        enum:
+        - personal
+        - office
+        - shopping
+        - family
+        - friends
+        - education
+        - health
+        - travel
+        - food
+        in: path
+        name: group
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Get tasks by group
       tags:
       - tasks
   /tasksByFilter:
