@@ -14,6 +14,7 @@ type CreateTaskRequest struct {
 	Description string `json:"description" binding:"required"`
 	DueDate     string `json:"due_date" binding:"required" example:"yyyy-mm-dd"` // user passes string in YYYY-MM-DD
 	Status      string `json:"status" binding:"omitempty,oneof=pending in_progress completed"`
+	TaskGroup   string `json:"task_group" binding:"required,oneof=personal office shopping family friends education health travel food"`
 }
 
 // CreateTask godoc
@@ -70,6 +71,7 @@ func CreateTask(c *gin.Context) {
 		Description: req.Description,
 		DueDate:     parseDueDate,
 		Status:      status,
+		TaskGroup:   req.TaskGroup,
 		UserID:      userID,
 	}
 

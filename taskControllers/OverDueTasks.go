@@ -30,14 +30,39 @@ func GetOverdueTasks(c *gin.Context) {
 	var tasks []models.Task
 	now := time.Now().UTC()
 
-	if err := config.DB.Where("user_id = ? AND due_date < ? AND status != ?", userID, now, "completed").Find(&tasks).Error; err != nil {
+	// Auto-mark overdue tasks
+	if err := config.DB.Model(&models.Task{}).
+		Where("user_id = ? AND due_date < ? AND status != ?", userID, now, "completed").
+		Update("is_overdue", true).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update overdue tasks"})
+		return
+	}
+
+	// Now fetch updated overdue tasks
+	if err := config.DB.Where("user_id = ? AND is_overdue = ?", userID, true).
+		Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch overdue tasks"})
 		return
 	}
 
+	var response []gin.H
+
+	for _, task := range tasks {
+		overdueDays := int(time.Since(task.DueDate).Hours() / 24)
+
+		response = append(response, gin.H{
+			"id":           task.Id,
+			"title":        task.Title,
+			"description":  task.Description,
+			"status":       task.Status,
+			"is_overdue":   task.IsOverdue,
+			"overdue_days": overdueDays,
+		})
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": "success",
-		"count":  len(tasks),
-		"data":   tasks,
+		"count":  len(response),
+		"data":   response,
 	})
 }

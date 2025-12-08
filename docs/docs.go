@@ -412,6 +412,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/tasks/group/{group}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get tasks filtered by specific groups like personal, education, office, etc.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Get tasks by group",
+                "parameters": [
+                    {
+                        "enum": [
+                            "personal",
+                            "office",
+                            "shopping",
+                            "family",
+                            "friends",
+                            "education",
+                            "health",
+                            "travel",
+                            "food"
+                        ],
+                        "type": "string",
+                        "description": "Task Group",
+                        "name": "group",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Task"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/tasks/{id}": {
             "get": {
                 "security": [
@@ -595,6 +643,7 @@ const docTemplate = `{
             "required": [
                 "description",
                 "due_date",
+                "task_group",
                 "title"
             ],
             "properties": {
@@ -612,6 +661,20 @@ const docTemplate = `{
                         "pending",
                         "in_progress",
                         "completed"
+                    ]
+                },
+                "task_group": {
+                    "type": "string",
+                    "enum": [
+                        "personal",
+                        "office",
+                        "shopping",
+                        "family",
+                        "friends",
+                        "education",
+                        "health",
+                        "travel",
+                        "food"
                     ]
                 },
                 "title": {
@@ -698,8 +761,26 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_overdue": {
+                    "type": "boolean"
+                },
                 "status": {
                     "type": "string"
+                },
+                "task_group": {
+                    "type": "string",
+                    "enum": [
+                        "personal",
+                        "office",
+                        "shopping",
+                        "family",
+                        "friends",
+                        "education",
+                        "health",
+                        "travel",
+                        "food"
+                    ],
+                    "example": "personal"
                 },
                 "title": {
                     "type": "string"
