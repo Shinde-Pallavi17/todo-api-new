@@ -32,13 +32,11 @@ type CreateTaskRequest struct {
 func CreateTask(c *gin.Context) {
 	var req CreateTaskRequest
 
-	// Validate JSON input
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Parse due date
 	parseDueDate, err := time.Parse("2006-01-02", req.DueDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format, use YYYY-MM-DD"})
@@ -59,13 +57,11 @@ func CreateTask(c *gin.Context) {
 	}
 	userID := userIDVal.(uint)
 
-	// If no status provided, set default
 	status := req.Status
 	if status == "" {
 		status = "pending"
 	}
 
-	// Create task
 	task := models.Task{
 		Title:       req.Title,
 		Description: req.Description,

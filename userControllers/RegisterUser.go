@@ -56,13 +56,6 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Generate JWT
-	// token, err := utils.GenerateJWT(user.ID, user.Username)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-	// 	return
-	// }
-
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User registered successfully",
 		"user": gin.H{
