@@ -21,7 +21,7 @@ import (
 func GetAllTasks(c *gin.Context) {
 	var tasks []models.Task
 
-	// ✅ Get user ID from context (added by middleware)
+	//Get user ID from context (added by middleware)
 	userID := c.GetUint("userID")
 
 	if err := config.DB.Where("user_id = ?", userID).Find(&tasks).Error; err != nil {
@@ -29,7 +29,7 @@ func GetAllTasks(c *gin.Context) {
 		return
 	}
 
-	// Convert all date fields from UTC to IST before sending to user
+	//Convert all date fields from UTC to IST before sending to user
 	loc, _ := time.LoadLocation("Asia/Kolkata")
 	for i := range tasks {
 
@@ -68,7 +68,7 @@ func GetTaskByID(c *gin.Context) {
 		return
 	}
 
-	// Convert all date fields from UTC to IST before sending to user
+	//Convert all date fields from UTC to IST before sending to user
 	loc, _ := time.LoadLocation("Asia/Kolkata")
 	task.DueDate = task.DueDate.In(loc)
 	task.CreatedAt = task.CreatedAt.In(loc)
@@ -79,10 +79,11 @@ func GetTaskByID(c *gin.Context) {
 
 // GetTasksByFilter godoc
 // @Summary Get all tasks
-// @Description Retrieve all tasks with optional filters (status, due_date) (JWT required)
+// @Description Retrieve all tasks with optional filters (priority, status, due_date) (JWT required)
 // @Tags tasks
 // @Security BearerAuth
 // @Produce  json
+// @Param priority query string false "Filter by priority (high, medium, low)"
 // @Param status query string false "Filter by status (pending, in-progress, completed)"
 // @Param due_date query string false "Filter by due date (YYYY-MM-DD)"
 // @Success 200 {array} models.Task
@@ -92,17 +93,22 @@ func GetTaskByID(c *gin.Context) {
 func GetTasksByFilter(c *gin.Context) {
 	var tasks []models.Task
 
-	userID := c.GetUint("userID") // ✅ Only current user's tasks
+	userID := c.GetUint("userID") // Only current user's tasks
 
-	// Start building query
+	//Start building query
 	query := config.DB.Model(&models.Task{}).Where("user_id = ?", userID)
 
-	// Filter by status
+	//Filter by priority
+	if priority := c.Query("priority"); priority != "" {
+		query = query.Where("priority = ?", priority)
+	}
+
+	//Filter by status
 	if status := c.Query("status"); status != "" {
 		query = query.Where("status = ?", status)
 	}
 
-	// Filter by due date
+	//Filter by due date
 	if dueDateStr := c.Query("due_date"); dueDateStr != "" {
 		dueDate, err := time.Parse("2006-01-02", dueDateStr)
 		if err != nil {
@@ -112,13 +118,13 @@ func GetTasksByFilter(c *gin.Context) {
 		query = query.Where("DATE(due_date) = ?", dueDate.Format("2006-01-02"))
 	}
 
-	// Execute query
+	//Execute query
 	if err := query.Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch tasks"})
 		return
 	}
 
-	// Convert all date fields from UTC to IST before sending to user
+	//Convert all date fields from UTC to IST before sending to user
 	loc, _ := time.LoadLocation("Asia/Kolkata")
 	for i := range tasks {
 

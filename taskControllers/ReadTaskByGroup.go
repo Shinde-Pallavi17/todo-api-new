@@ -22,7 +22,7 @@ func GetTasksByGroup(c *gin.Context) {
 	group := c.Param("group")
 	userID := c.GetUint("userID")
 
-	// only allow predefined group categories
+	//only allow predefined group categories
 	validCategories := map[string]bool{
 		"personal":  true,
 		"office":    true,
@@ -42,13 +42,13 @@ func GetTasksByGroup(c *gin.Context) {
 
 	var tasks []models.Task
 
-	// Fetch tasks by group
+	//Fetch tasks by group
 	if err := config.DB.Where("user_id = ? AND task_group = ?", userID, group).Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch tasks"})
 		return
 	}
 
-	// Convert dates to IST
+	//Convert dates to IST
 	loc, _ := time.LoadLocation("Asia/Kolkata")
 	for i := range tasks {
 		tasks[i].DueDate = tasks[i].DueDate.In(loc)

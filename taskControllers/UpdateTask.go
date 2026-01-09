@@ -14,6 +14,8 @@ type UpdateTaskRequest struct {
 	Description string `json:"description" binding:"required"`
 	DueDate     string `json:"due_date" binding:"required" example:"yyyy-mm-dd"`               // string from client
 	Status      string `json:"status" binding:"omitempty,oneof=pending in_progress completed"` // optional
+	Priority    string `json:"priority" binding:"omitempty,oneof=medium high low"`
+	TaskGroup   string `json:"task_group" binding:"required,oneof=personal office shopping family friends education health travel food"`
 }
 
 // UpdateTask godoc
@@ -47,19 +49,19 @@ func UpdateTask(c *gin.Context) {
 		return
 	}
 
-	// Parse due date string → store in UTC
+	//Parse due date string → store in UTC
 	parsedDate, err := time.Parse("2006-01-02", req.DueDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format, use YYYY-MM-DD"})
 		return
 	}
 
-	// Overwrite all fields
+	//Overwrite all fields
 	task.Title = req.Title
 	task.Description = req.Description
 	task.DueDate = parsedDate.UTC() // ensure UTC
 
-	// Set status: if empty, default to "pending"
+	//Set status: if empty, default to "pending"
 	if req.Status == "" {
 		task.Status = "pending"
 	} else {

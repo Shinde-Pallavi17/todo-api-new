@@ -30,7 +30,7 @@ func GetOverdueTasks(c *gin.Context) {
 	var tasks []models.Task
 	now := time.Now().UTC()
 
-	// Auto-mark overdue tasks
+	//Auto-mark overdue tasks
 	if err := config.DB.Model(&models.Task{}).
 		Where("user_id = ? AND due_date < ? AND status != ?", userID, now, "completed").
 		Update("is_overdue", true).Error; err != nil {
@@ -38,7 +38,7 @@ func GetOverdueTasks(c *gin.Context) {
 		return
 	}
 
-	// Now fetch updated overdue tasks
+	//Now fetch updated overdue tasks
 	if err := config.DB.Where("user_id = ? AND is_overdue = ?", userID, true).
 		Find(&tasks).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch overdue tasks"})

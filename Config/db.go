@@ -18,9 +18,10 @@ func ConnectDB() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	// Run AutoMigrate on all models
+	//Run AutoMigrate on all models
 	database.AutoMigrate(&models.Task{})
 	database.AutoMigrate(&models.User{})
+	database.AutoMigrate(&models.Reminder{})
 
 	DB = database
 	log.Println("Database connected and migrated successfully")

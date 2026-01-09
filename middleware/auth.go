@@ -19,7 +19,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Expect header format: Bearer <token>
+		//Expect header format: Bearer <token>
 		tokenParts := strings.Split(authHeader, " ")
 
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
@@ -36,7 +36,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Extract user_id from claims
+		//Extract user_id from claims
 		userID, ok := claims["user_id"].(float64)
 		if !ok {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
@@ -44,7 +44,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Store userID in context
+		//Store userID in context
 		c.Set("userID", uint(userID))
 
 		fmt.Println("Auth Middleware triggered for:", c.FullPath(), "| userID:", userID)

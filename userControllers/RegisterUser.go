@@ -12,6 +12,7 @@ import (
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required,min=3"`
 	Password string `json:"password" binding:"required,min=4"`
+	Email    string `json:"email" binding:"required"`
 }
 
 // RegisterUser godoc
@@ -33,7 +34,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Check if username already exists
+	//Check if username already exists
 	var existingUser models.User
 	if err := config.DB.Where("username = ?", req.Username).First(&existingUser).Error; err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
@@ -48,6 +49,7 @@ func RegisterUser(c *gin.Context) {
 
 	user := models.User{
 		Username: req.Username,
+		Email:    req.Email,
 		Password: hashedPassword,
 	}
 
@@ -61,6 +63,7 @@ func RegisterUser(c *gin.Context) {
 		"user": gin.H{
 			"id":       user.ID,
 			"username": user.Username,
+			"email":    user.Email,
 		},
 	})
 }
