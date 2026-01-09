@@ -14,6 +14,7 @@ type CreateTaskRequest struct {
 	Description string `json:"description" binding:"required"`
 	DueDate     string `json:"due_date" binding:"required" example:"yyyy-mm-dd"` // user passes string in YYYY-MM-DD
 	Status      string `json:"status" binding:"omitempty,oneof=pending in_progress completed"`
+	TaskGroup   string `json:"task_group" binding:"required,oneof=personal office shopping family friends education health travel food"`
 }
 
 // CreateTask godoc
@@ -31,13 +32,11 @@ type CreateTaskRequest struct {
 func CreateTask(c *gin.Context) {
 	var req CreateTaskRequest
 
-	// Validate JSON input
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Parse due date
 	parseDueDate, err := time.Parse("2006-01-02", req.DueDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format, use YYYY-MM-DD"})
@@ -58,18 +57,17 @@ func CreateTask(c *gin.Context) {
 	}
 	userID := userIDVal.(uint)
 
-	// If no status provided, set default
 	status := req.Status
 	if status == "" {
 		status = "pending"
 	}
 
-	// Create task
 	task := models.Task{
 		Title:       req.Title,
 		Description: req.Description,
 		DueDate:     parseDueDate,
 		Status:      status,
+		TaskGroup:   req.TaskGroup,
 		UserID:      userID,
 	}
 
