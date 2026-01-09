@@ -3,26 +3,29 @@ package utils
 import (
 	"fmt"
 	"net/smtp"
+
 	config "todo-manager/Config"
 )
 
 func SendReminderEmail(toEmail, title, body string) error {
-	msg := "From: " + config.FromEmail + "\n" +
+	smtpConfig := config.LoadSMTPConfig()
+
+	msg := "From: " + smtpConfig.From + "\n" +
 		"To: " + toEmail + "\n" +
 		"Subject: Reminder: " + title + "\n\n" +
 		body
 
 	auth := smtp.PlainAuth(
 		"",
-		config.SMTPUser,
-		config.SMTPPass,
-		config.SMTPHost,
+		smtpConfig.User,
+		smtpConfig.Pass,
+		smtpConfig.Host,
 	)
 
 	return smtp.SendMail(
-		fmt.Sprintf("%s:%d", config.SMTPHost, config.SMTPPort),
+		fmt.Sprintf("%s:%d", smtpConfig.Host, smtpConfig.Port),
 		auth,
-		config.SMTPUser,
+		smtpConfig.User,
 		[]string{toEmail},
 		[]byte(msg),
 	)
