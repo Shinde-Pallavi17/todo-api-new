@@ -510,7 +510,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieve all tasks with optional filters (status, due_date) (JWT required)",
+                "description": "Retrieve all tasks with optional filters (priority, status, due_date) (JWT required)",
                 "produces": [
                     "application/json"
                 ],
@@ -519,6 +519,12 @@ const docTemplate = `{
                 ],
                 "summary": "Get all tasks",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by priority (high, medium, low)",
+                        "name": "priority",
+                        "in": "query"
+                    },
                     {
                         "type": "string",
                         "description": "Filter by status (pending, in-progress, completed)",
@@ -641,9 +647,6 @@ const docTemplate = `{
         "controllers.CreateTaskRequest": {
             "type": "object",
             "required": [
-                "description",
-                "due_date",
-                "task_group",
                 "title"
             ],
             "properties": {
@@ -654,6 +657,18 @@ const docTemplate = `{
                     "description": "user passes string in YYYY-MM-DD",
                     "type": "string",
                     "example": "yyyy-mm-dd"
+                },
+                "priority": {
+                    "type": "string",
+                    "enum": [
+                        "medium",
+                        "high",
+                        "low"
+                    ]
+                },
+                "reminder_at": {
+                    "type": "string",
+                    "example": "2025-01-02T10:00:00+05:30"
                 },
                 "status": {
                     "type": "string",
@@ -701,10 +716,14 @@ const docTemplate = `{
         "controllers.RegisterRequest": {
             "type": "object",
             "required": [
+                "email",
                 "password",
                 "username"
             ],
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string",
                     "minLength": 4
@@ -720,6 +739,7 @@ const docTemplate = `{
             "required": [
                 "description",
                 "due_date",
+                "task_group",
                 "title"
             ],
             "properties": {
@@ -731,6 +751,14 @@ const docTemplate = `{
                     "type": "string",
                     "example": "yyyy-mm-dd"
                 },
+                "priority": {
+                    "type": "string",
+                    "enum": [
+                        "medium",
+                        "high",
+                        "low"
+                    ]
+                },
                 "status": {
                     "description": "optional",
                     "type": "string",
@@ -738,6 +766,20 @@ const docTemplate = `{
                         "pending",
                         "in_progress",
                         "completed"
+                    ]
+                },
+                "task_group": {
+                    "type": "string",
+                    "enum": [
+                        "personal",
+                        "office",
+                        "shopping",
+                        "family",
+                        "friends",
+                        "education",
+                        "health",
+                        "travel",
+                        "food"
                     ]
                 },
                 "title": {
@@ -763,6 +805,12 @@ const docTemplate = `{
                 },
                 "is_overdue": {
                     "type": "boolean"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "reminder_at": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string"

@@ -8,7 +8,80 @@ definitions:
         description: user passes string in YYYY-MM-DD
         example: yyyy-mm-dd
         type: string
+      priority:
+        enum:
+        - medium
+        - high
+        - low
+        type: string
+      reminder_at:
+        example: "2025-01-02T10:00:00+05:30"
+        type: string
       status:
+        enum:
+        - pending
+        - in_progress
+        - completed
+        type: string
+      task_group:
+        enum:
+        - personal
+        - office
+        - shopping
+        - family
+        - friends
+        - education
+        - health
+        - travel
+        - food
+        type: string
+      title:
+        maxLength: 100
+        type: string
+    required:
+    - title
+    type: object
+  controllers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 4
+        type: string
+      username:
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  controllers.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      due_date:
+        description: string from client
+        example: yyyy-mm-dd
+        type: string
+      priority:
+        enum:
+        - medium
+        - high
+        - low
+        type: string
+      status:
+        description: optional
         enum:
         - pending
         - in_progress
@@ -35,51 +108,6 @@ definitions:
     - task_group
     - title
     type: object
-  controllers.LoginRequest:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  controllers.RegisterRequest:
-    properties:
-      password:
-        minLength: 4
-        type: string
-      username:
-        minLength: 3
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  controllers.UpdateTaskRequest:
-    properties:
-      description:
-        type: string
-      due_date:
-        description: string from client
-        example: yyyy-mm-dd
-        type: string
-      status:
-        description: optional
-        enum:
-        - pending
-        - in_progress
-        - completed
-        type: string
-      title:
-        maxLength: 100
-        type: string
-    required:
-    - description
-    - due_date
-    - title
-    type: object
   models.Task:
     properties:
       created_at:
@@ -92,6 +120,10 @@ definitions:
         type: integer
       is_overdue:
         type: boolean
+      priority:
+        type: string
+      reminder_at:
+        type: string
       status:
         type: string
       task_group:
@@ -441,9 +473,13 @@ paths:
       - tasks
   /tasksByFilter:
     get:
-      description: Retrieve all tasks with optional filters (status, due_date) (JWT
-        required)
+      description: Retrieve all tasks with optional filters (priority, status, due_date)
+        (JWT required)
       parameters:
+      - description: Filter by priority (high, medium, low)
+        in: query
+        name: priority
+        type: string
       - description: Filter by status (pending, in-progress, completed)
         in: query
         name: status

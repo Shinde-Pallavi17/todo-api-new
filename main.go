@@ -1,8 +1,11 @@
 package main
 
 import (
+	"log"
 	config "todo-manager/Config"
 	routes "todo-manager/Routes"
+	"todo-manager/internal/reminders"
+	"todo-manager/utils"
 )
 
 // @title Todo API
@@ -15,12 +18,29 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 func main() {
-	// Initialize DB once
+	log.Println("Main started")
+	//Initialize DB once
 	config.ConnectDB()
 
-	// Setup routes
+	go func() {
+		err := utils.SendReminderEmail(
+			"pallavishinde622@gmail.com",
+			"SMTP Test",
+			"If you receive this, SMTP works",
+		)
+		if err != nil {
+			log.Println("SMTP test failed:", err)
+		} else {
+			log.Println("SMTP test success")
+		}
+	}()
+
+	//start reminder worker
+	reminders.StartReminderWorker(config.DB)
+
+	//Setup routes
 	r := routes.SetupRouter()
 
-	// Start server
+	//Start server
 	r.Run(":8080")
 }
