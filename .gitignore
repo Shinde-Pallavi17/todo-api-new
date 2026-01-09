@@ -1,4 +1,6 @@
 # Ignore executable files
 *.exe
-Config/email.go
+.env
+*.env
+
 
