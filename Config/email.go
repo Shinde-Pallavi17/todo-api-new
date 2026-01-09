@@ -10,7 +10,7 @@ type SMTPConfig struct {
 	From string
 }
 
-// ⚠️ MUST start with CAPITAL L
+//MUST start with CAPITAL L
 func LoadSMTPConfig() SMTPConfig {
 	return SMTPConfig{
 		Host: os.Getenv("SMTP_HOST"),
