@@ -5,7 +5,8 @@ import (
 	config "todo-manager/Config"
 	routes "todo-manager/Routes"
 	"todo-manager/internal/reminders"
-	"todo-manager/utils"
+
+	"github.com/joho/godotenv"
 )
 
 // @title Todo API
@@ -19,21 +20,17 @@ import (
 // @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	log.Println("Main started")
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	//Initialize DB once
 	config.ConnectDB()
 
-	go func() {
-		err := utils.SendReminderEmail(
-			"pallavishinde622@gmail.com",
-			"SMTP Test",
-			"If you receive this, SMTP works",
-		)
-		if err != nil {
-			log.Println("SMTP test failed:", err)
-		} else {
-			log.Println("SMTP test success")
-		}
-	}()
+	//OPTIONAL: SMTP self-test (env controlled)
+	//go utils.RunSMTPStartupTest()
 
 	//start reminder worker
 	reminders.StartReminderWorker(config.DB)
