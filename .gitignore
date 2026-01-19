@@ -2,4 +2,4 @@
 *.exe
 .env
 *.env
-gitignore cmd/create_admin/
+cmd/create_admin/
