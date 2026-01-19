@@ -12,7 +12,7 @@ import (
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required,min=3"`
 	Password string `json:"password" binding:"required,min=4"`
-	Email    string `json:"email" binding:"required"`
+	Email    string `json:"email" binding:"required,email,customemail"`
 }
 
 // RegisterUser godoc
@@ -51,6 +51,7 @@ func RegisterUser(c *gin.Context) {
 		Username: req.Username,
 		Email:    req.Email,
 		Password: hashedPassword,
+		Role:     "user",
 	}
 
 	if err := config.DB.Create(&user).Error; err != nil {

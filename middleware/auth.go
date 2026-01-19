@@ -44,10 +44,28 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		//Extract role from claims
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token role"})
+			c.Abort()
+			return
+		}
+
+		// Extract username from claims
+		username, ok := claims["username"].(string)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token username"})
+			c.Abort()
+			return
+		}
+
 		//Store userID in context
 		c.Set("userID", uint(userID))
+		c.Set("username", username)
+		c.Set("role", role)
 
-		fmt.Println("Auth Middleware triggered for:", c.FullPath(), "| userID:", userID)
+		fmt.Println("Auth Middleware triggered for:", c.FullPath(), "| userID:", userID, "| role:", role)
 
 		c.Next()
 	}

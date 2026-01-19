@@ -10,10 +10,11 @@ import (
 var JwtSecret = []byte("MyTodo@13")
 
 // GenerateJWT generates a JWT token with username and expiry
-func GenerateJWT(userID uint, username string) (string, error) {
+func GenerateJWT(userID uint, username string, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id":  userID,
 		"username": username,
+		"role":     role,
 		"exp":      time.Now().Add(time.Minute * 10).Unix(), // token valid for 24h
 	}
 

@@ -2,5 +2,4 @@
 *.exe
 .env
 *.env
-
-
+cmd/create_admin/

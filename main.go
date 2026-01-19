@@ -5,7 +5,10 @@ import (
 	config "todo-manager/Config"
 	routes "todo-manager/Routes"
 	"todo-manager/internal/reminders"
+	"todo-manager/utils"
 
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -24,6 +27,11 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	//Register custom validators (EMAIL RULES)
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		utils.RegisterCustomValidators(v)
 	}
 
 	//Initialize DB once

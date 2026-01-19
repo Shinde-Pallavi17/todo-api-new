@@ -6,11 +6,11 @@ import (
 	taskControllers "todo-manager/taskControllers"
 	userControllers "todo-manager/userControllers"
 
+	_ "todo-manager/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
-	_ "todo-manager/docs"
 )
 
 func SetupRouter() *gin.Engine {
@@ -31,10 +31,26 @@ func SetupRouter() *gin.Engine {
 
 	r.POST("/login", userControllers.LoginUser) //user login
 
+	// admin routes
+	admin := r.Group("/admin")
+	admin.Use(middlewares.AuthMiddleware())
+	{
+
+		admin.GET("/users", userControllers.AdminGetAllUsers)
+
+		admin.GET("/tasks", userControllers.AdminGetAllTasks)
+
+		admin.GET("/searchTask", userControllers.SearchTasks) //search tasks by title or description
+
+		admin.GET("/tasksByFilter", userControllers.AdminGetTasksByFilter) //get tasks by filter
+
+	}
+
 	// Protected routes
 	auth := r.Group("/")
 	auth.Use(middlewares.AuthMiddleware())
 	{
+
 		auth.POST("/task", taskControllers.CreateTask) //create new task
 
 		auth.GET("/tasks", taskControllers.GetAllTasks) //read all task
@@ -44,6 +60,8 @@ func SetupRouter() *gin.Engine {
 		auth.GET("/tasks/group/:group", taskControllers.GetTasksByGroup) //read task by group
 
 		auth.GET("/tasksByFilter", taskControllers.GetTasksByFilter) //read task by filter date and status
+
+		auth.POST("/tasks/assign", taskControllers.AssignTask) //assign task by admin or user
 
 		auth.DELETE("/deleteTask/:id", taskControllers.DeleteTask) //delete task by id
 
